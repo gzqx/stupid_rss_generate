@@ -22,8 +22,10 @@ if ($cliRecordFile){
 	$recordFile=$cliRecordFile;
 }
 
+
 unless (-e $recordFile){
 	my $input= prompt "File '$recordFile' does not exit. Do you want to create a new one? (y/n)", -re=>'^(y|yes|n|no)$';
+	print "\n";
 	if ($input =~/^(y|yes)$/i) {
 		&addNewBook();
 	} else {
@@ -33,9 +35,8 @@ unless (-e $recordFile){
 
 sub addNewBook{
 	my $yaml=YAML::Tiny->new;
-	my $contentUrlInput= prompt "Input the link to the content pate:";
-
-
+	my $contentUrlInput= prompt "Input the link to the content page:";
+	print "\n";
 	$yaml->write($recordFile);
 }
 

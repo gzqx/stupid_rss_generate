@@ -1,9 +1,10 @@
 use inc::Module::Install;
 
-name        'STUPID RSS GENERATOR';
-abstract    '42';
-author      'Arthur Dent';
-include     'Module::AutoInstall';
+name            'STUPID RSS GENERATOR';
+abstract        '42';
+author          'Arthur Dent';
+include         'Module::AutoInstall';
+version_from    'stupid_rss_generator.pl';
 
 requires    'Module0';
 

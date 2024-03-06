@@ -1,0 +1,32 @@
+---
+abstract: '42'
+author:
+  - 'Arthur Dent'
+build_requires:
+  ExtUtils::MakeMaker: 6.36
+configure_requires:
+  ExtUtils::MakeMaker: 6.36
+distribution_type: module
+dynamic_config: 1
+generated_by: 'Module::Install version 1.21'
+license: unknown
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: 'STUPID RSS GENERATOR'
+no_index:
+  directory:
+    - inc
+requires:
+  Clone: '0.46'
+  Getopt::Long: '2.54'
+  HTML::TreeBuilder: '5.07'
+  IO::Prompter: '0.005001'
+  LWP::UserAgent: '6.76'
+  Lingua::ZH::Numbers: '0.04'
+  Module0: 0
+  Time::Piece: '1.3401'
+  URI: '5.27'
+  XML::RSS: '1.63'
+  YAML::Tiny: '1.74'
+version: 0.01

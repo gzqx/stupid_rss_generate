@@ -23,7 +23,7 @@ my $cliRecordFile;
 my $verbose=1;
 my $automation;
 my $help;
-my $rssFolderPath;
+my $rssFolderPath='./rss/';
 
 
 GetOptions{
@@ -33,6 +33,11 @@ GetOptions{
 	'h|help'		=> \$help,
 	'a|auto'		=> \$automation,
 } or die "Unknown option!\n";
+
+unless (-d $rssFolderPath){
+	mkdir $rssFolderPath or die "Failed to create $rssFolderPath.";
+	say "$rssFolderPath not exist. Created One.";
+}
 
 #book yaml template
 my $bookTemplate={
@@ -83,23 +88,46 @@ if ($useSystemProxy =~/^(y|yes)$/i) {
 unless (-e $recordFile){
 	my $createRecrodFileInput = prompt "File '$recordFile' does not exist. Do you want to create a new one? (y/n)\n", -yn;
 	if ($createRecrodFileInput =~/^(y|yes)$/i) {
-		my $yaml=YAML::Tiny->new;
+		my $yaml=YAML::Tiny->new();
 		my $rss=XML::RSS->new(version => '2.0');
-		($yaml,$rss)=&addNewBook();
-		$yaml->write($recordFile);
-		$rss->save("$rss->channel('title')".'.xml');
+		my $newBook=clone($bookTemplate);
+		($newBook,$rss)=&addNewBook($newBook);
+		push @$yaml, $newBook;
+		$yaml->write($recordFile) or die ("Failed to save to $recordFile");
+		$rss->save($rssFolderPath.$rss->channel('title').'.xml') or die ("Failed to save to $rssFolderPath$rss->channel('title').xml");
 	} else {
 		say "No '$recordFile' found or created, exiting.";
 		exit;
 	}
+} else {
+#update books if record file found
+	my $yaml=YAML::Tiny->read("$recordFile");
+	foreach my $targetBook (@{$yaml}){
+		my $rss=XML::RSS->new(version => 2.0);
+		my $rssName=$targetBook->{Title}.".xml";
+		if (-e $rssFolderPath.$rssName){
+			$rss->parsefile($rssFolderPath.$rssName);
+		} else{
+			$rss->channel(
+				title	=> "$targetBook->{Title}",
+				link	=> "$targetBook->{ContentPageUrl}",
+			);
+		}
+		#TODO:support limit rss entries per file
+		my $updatedTargetBook;
+		($targetBook, $rss)=&updateBooks($targetBook,$rss);
+		&vsay($rssFolderPath.$rssName);
+		&vsay($rss->as_string);
+		$rss->save($rssFolderPath.$rssName) or die ("Failed to save to $rssFolderPath$rssName");
+	}
+	$yaml->write($recordFile);
 }
 
-#TODO: what to do if recordfile do exit
 
 sub addNewBook{
 	#TODO: add new book to existing yaml
-	my $yaml=pop @_;
-	my $contentUrlInput= prompt "Input the link to the content page:\n";
+	my $newBook=pop @_;
+	my $contentUrlInput= prompt -v, "Input the link to the content page:\n";
 	#format uri
 	my $contentUrl=URI->new($contentUrlInput);
 	if (not $contentUrl->scheme) {
@@ -109,18 +137,16 @@ sub addNewBook{
 	#create RSS template
 	my $rssNewBook=XML::RSS->new(version => '2.0');
 	
-	#create template copy
-	my $newBook=clone($bookTemplate);
-	$newBook->{ContentPageUrl}=$contentUrl;
+	#file newbook content
+	$newBook->{ContentPageUrl}=$contentUrl->as_string;
 	#TODO Reuse regrex from same domain
-	$newBook->{RegrexForTitle}=prompt "Input the regrex for extracting the book title from content page:\n";
-	$newBook->{RegrexForChapterLinkAndNumber}=prompt "Input the regrex for extracting the Chapter Link and Number from content page:\n";
-	$newBook->{RegrexForChapterTitle}=prompt "Input the regrex for extracting the Chapter Title from text page:\n";
-	$newBook->{RegrexForText}=prompt "Input the regrex for extracting the text from text page:\n";
+	$newBook->{RegrexForTitle}=prompt -v, "Input the regrex for extracting the book title from content page:\n";
+	$newBook->{RegrexForChapterLinkAndNumber}=prompt -v, "Input the regrex for extracting the Chapter Link and Number from content page:\n";
+	$newBook->{RegrexForChapterTitle}=prompt -v, "Input the regrex for extracting the Chapter Title from text page:\n";
+	$newBook->{RegrexForText}=prompt -v, "Input the regrex for extracting the text from text page:\n";
 
 	($newBook,$rssNewBook)=&updateBooks($newBook,$rssNewBook);
-	push @{$yaml->[0]}, $newBook;
-	return ($yaml, $rssNewBook);
+	return ($newBook, $rssNewBook);
 }
 
 sub updateBooks{
@@ -135,18 +161,18 @@ sub updateBooks{
 			$targetBook->{Title} = $1; 
 			&vsay("Title of book is $targetBook->{Title}");
 			$rssBook->channel(
-				title	=> '$targetBook->{Title}',
-				link	=> '$targetBook->{ContentPageUrl}',
+				title	=> "$targetBook->{Title}",
+				link	=> "$targetBook->{ContentPageUrl}",
 			);
 		}
 		while($contentPageContent =~/$targetBook->{RegrexForChapterLinkAndNumber}/g){
 			#TODO: Handle Chinese number with Lingua::ZH::Numbers
 			#TODO: Handle situation when link and number is not in same line or link somehow managed to come after chapter number
 			my $chapterLink=$1;
-			say("Chapter link is $chapterLink");
 			&vsay("Chapter link is $chapterLink");
 			my $chapterCounter = $2;
 			&vsay("Chapter checked is No.$chapterCounter");
+
 			#fetch new chapter if there is any
 			if ($chapterCounter > $targetBook->{LastChapterFetched}){
 				my $textPageResponse=$userAgent->get($chapterLink);
@@ -164,7 +190,7 @@ sub updateBooks{
 					my $text='';
 					while ($textPageContent=~/$targetBook->{RegrexForText}/g){
 						$text.=$1;
-						&vsay("Get a new line of text as: \n $text");
+						#&vsay("Get a new line of text as: \n $text");
 					}
 					$rssBook->add_item(
 						title		=> "$chapterTitle",
@@ -174,6 +200,7 @@ sub updateBooks{
 				}
 			}
 			$targetBook->{LastChapterFetched}++;
+			last; # for testing
 			sleep(20); #Prevent been blocked for too much request
 		}
 	}else{

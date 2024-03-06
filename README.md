@@ -5,7 +5,9 @@ This is a stupid perl script that generates a RSS XML file that you can subscrib
 Mainly because I want to be able to subscribe to serial books. As we all know, RSS is dying since it is hard to harvest data from RSS users.
 
 ## How
-- `make`.
+- Install reasonable version of `perl` and `cpan`.
+- `perl Makefile.PL`
+- `make installdeps`.
 - run the single script `stupid_rss_generator.pl`.
 - By default, it stores generated rss file at `./rss/<book-title>.xml`.
 - By default, it stores and reads metadata from `./record.yaml`.

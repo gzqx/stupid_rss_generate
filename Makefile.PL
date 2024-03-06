@@ -6,10 +6,7 @@ author          'Arthur Dent';
 include         'Module::AutoInstall';
 version_from    'stupid_rss_generator.pl';
 
-requires    'Module0';
-
-feature     'Basic',
-    -default					=> 1,
+requires    
     'Getopt::Long'				=> '2.54',
     'Clone'						=> '0.46',
     'Lingua::ZH::Numbers'		=> '0.04',

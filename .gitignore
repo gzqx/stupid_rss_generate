@@ -4,4 +4,4 @@ rss/*
 MYMETA*
 Makefile
 blib/
-blib/*
+blib/*/

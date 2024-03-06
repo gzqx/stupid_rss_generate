@@ -6,6 +6,8 @@ Mainly because I want to be able to subscribe to serial books. As we all know, R
 
 ## How
 - Install reasonable version of `perl` and `cpan`. Better though to have [`CPANPLUS`](https://metacpan.org/pod/CPANPLUS) if you only want to use perl instead of writing perl as it supports skipping testing which might take a very long time.
+- Dependencies that needed to be installed from OS:
+  - `expat-devel` (or `libexpat1-dev`) (for XML::Parser)
 - `perl Makefile.PL`
 - `make installdeps`.
 - run the single script `stupid_rss_generator.pl`.

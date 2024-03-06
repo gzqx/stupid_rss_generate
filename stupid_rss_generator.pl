@@ -203,7 +203,7 @@ sub updateBooks{
 				}
 			}
 			$targetBook->{LastChapterFetched}++;
-			last; # for testing
+			#last; # for testing
 			sleep(20); #Prevent been blocked for too much request
 		}
 	}else{

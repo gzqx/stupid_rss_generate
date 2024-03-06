@@ -1,4 +1,4 @@
-# This Makefile is for the STUPID::RSS_GENERATOR extension to perl.
+# This Makefile is for the stupid_rss_generate extension to perl.
 #
 # It was generated automatically by MakeMaker version
 # 7.70 (Revision: 77000) from the contents of
@@ -13,10 +13,8 @@
 
 #     BUILD_REQUIRES => {  }
 #     CONFIGURE_REQUIRES => {  }
-#     NAME => q[STUPID::RSS_GENERATOR]
 #     PREREQ_PM => { Clone=>q[0.46], Getopt::Long=>q[2.54], HTML::TreeBuilder=>q[5.07], IO::Prompter=>q[0.005001], LWP::UserAgent=>q[6.76], Lingua::ZH::Numbers=>q[0.04], Time::Piece=>q[1.3401], URI=>q[5.27], XML::RSS=>q[1.63], YAML::Tiny=>q[1.74] }
 #     TEST_REQUIRES => {  }
-#     VERSION_FROM => q[stupid_rss_generator.pl]
 
 # --- MakeMaker post_initialize section:
 
@@ -54,13 +52,13 @@ VENDORLIBEXP = /usr/share/perl5/vendor_perl
 AR_STATIC_ARGS = cr
 DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
-NAME = STUPID::RSS_GENERATOR
-NAME_SYM = STUPID_RSS_GENERATOR
-VERSION = 0.01
+NAME = stupid_rss_generate
+NAME_SYM = stupid_rss_generate
+VERSION = 
 VERSION_MACRO = VERSION
-VERSION_SYM = 0_01
+VERSION_SYM = 
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 0.01
+XS_VERSION = 
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -146,11 +144,11 @@ MM_REVISION = 77000
 # PARENT_NAME = NAME without BASEEXT and no trailing :: (eg Foo::Bar)
 # DLBASE  = Basename part of dynamic library. May be just equal BASEEXT.
 MAKE = make
-FULLEXT = STUPID/RSS_GENERATOR
-BASEEXT = RSS_GENERATOR
-PARENT_NAME = STUPID
+FULLEXT = stupid_rss_generate
+BASEEXT = stupid_rss_generate
+PARENT_NAME = 
 DLBASE = $(BASEEXT)
-VERSION_FROM = stupid_rss_generator.pl
+VERSION_FROM = 
 OBJECT = 
 LDFROM = $(OBJECT)
 LINKTYPE = dynamic
@@ -168,8 +166,8 @@ MAN3PODS =
 CONFIGDEP = $(PERL_ARCHLIBDEP)$(DFSEP)Config.pm $(PERL_INCDEP)$(DFSEP)config.h
 
 # Where to build things
-INST_LIBDIR      = $(INST_LIB)/STUPID
-INST_ARCHLIBDIR  = $(INST_ARCHLIB)/STUPID
+INST_LIBDIR      = $(INST_LIB)
+INST_ARCHLIBDIR  = $(INST_ARCHLIB)
 
 INST_AUTODIR     = $(INST_LIB)/auto/$(FULLEXT)
 INST_ARCHAUTODIR = $(INST_ARCHLIB)/auto/$(FULLEXT)
@@ -254,8 +252,8 @@ CI = ci -u
 RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
-DISTNAME = STUPID-RSS_GENERATOR
-DISTVNAME = STUPID-RSS_GENERATOR-0.01
+DISTNAME = stupid_rss_generate
+DISTVNAME = stupid_rss_generate-
 
 
 # --- MakeMaker macro section:
@@ -491,7 +489,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) 'meta-spec:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  url: http://module-build.sourceforge.net/META-spec-v1.4.html' >> META_new.yml
 	$(NOECHO) $(ECHO) '  version: '\''1.4'\''' >> META_new.yml
-	$(NOECHO) $(ECHO) 'name: STUPID-RSS_GENERATOR' >> META_new.yml
+	$(NOECHO) $(ECHO) 'name: stupid_rss_generate' >> META_new.yml
 	$(NOECHO) $(ECHO) 'no_index:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  directory:' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
@@ -507,7 +505,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '  URI: '\''5.27'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  XML::RSS: '\''1.63'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  YAML::Tiny: '\''1.74'\''' >> META_new.yml
-	$(NOECHO) $(ECHO) 'version: 0.01' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version: '\'''\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'x_serialization_backend: '\''CPAN::Meta::YAML version 0.018'\''' >> META_new.yml
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
@@ -525,7 +523,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",' >> META_new.json
 	$(NOECHO) $(ECHO) '      "version" : 2' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
-	$(NOECHO) $(ECHO) '   "name" : "STUPID-RSS_GENERATOR",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "name" : "stupid_rss_generate",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "no_index" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '      "directory" : [' >> META_new.json
 	$(NOECHO) $(ECHO) '         "t",' >> META_new.json
@@ -559,7 +557,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      }' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
 	$(NOECHO) $(ECHO) '   "release_status" : "stable",' >> META_new.json
-	$(NOECHO) $(ECHO) '   "version" : 0.01,' >> META_new.json
+	$(NOECHO) $(ECHO) '   "version" : "",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "x_serialization_backend" : "JSON::PP version 4.16"' >> META_new.json
 	$(NOECHO) $(ECHO) '}' >> META_new.json
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
@@ -863,31 +861,31 @@ testdb_static test_static :: subdirs-test_static
 # --- MakeMaker ppd section:
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
-	$(NOECHO) $(ECHO) '<SOFTPKG NAME="STUPID-RSS_GENERATOR" VERSION="0.01">' > STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '    <ABSTRACT></ABSTRACT>' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '    <AUTHOR></AUTHOR>' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Clone::" VERSION="0.46" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Getopt::Long" VERSION="2.54" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="HTML::TreeBuilder" VERSION="5.07" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="IO::Prompter" VERSION="0.005001" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="LWP::UserAgent" VERSION="6.76" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Lingua::ZH::Numbers" VERSION="0.04" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Time::Piece" VERSION="1.3401" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="URI::" VERSION="5.27" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="XML::RSS" VERSION="1.63" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <REQUIRE NAME="YAML::Tiny" VERSION="1.74" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-thread-multi-5.36" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> STUPID-RSS_GENERATOR.ppd
-	$(NOECHO) $(ECHO) '</SOFTPKG>' >> STUPID-RSS_GENERATOR.ppd
+	$(NOECHO) $(ECHO) '<SOFTPKG NAME="stupid_rss_generate" VERSION="">' > stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '    <ABSTRACT></ABSTRACT>' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '    <AUTHOR></AUTHOR>' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Clone::" VERSION="0.46" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Getopt::Long" VERSION="2.54" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="HTML::TreeBuilder" VERSION="5.07" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="IO::Prompter" VERSION="0.005001" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="LWP::UserAgent" VERSION="6.76" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Lingua::ZH::Numbers" VERSION="0.04" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Time::Piece" VERSION="1.3401" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="URI::" VERSION="5.27" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="XML::RSS" VERSION="1.63" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="YAML::Tiny" VERSION="1.74" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-thread-multi-5.36" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> stupid_rss_generate.ppd
+	$(NOECHO) $(ECHO) '</SOFTPKG>' >> stupid_rss_generate.ppd
 
 
 # --- MakeMaker pm_to_blib section:
 
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
-	  'stupid_rss_generator.pl' '$(INST_LIB)/STUPID/stupid_rss_generator.pl' 
+	  'stupid_rss_generator.pl' '$(INST_LIB)/stupid_rss_generator.pl' 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

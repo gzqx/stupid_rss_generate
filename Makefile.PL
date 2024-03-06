@@ -1,12 +1,6 @@
-use Module::Metadata;
 use ExtUtils::MakeMaker;
 
-my %prereqs;
-
-
 WriteMakefile(
-    NAME         => 'STUPID::RSS_GENERATOR',
-    VERSION_FROM => 'stupid_rss_generator.pl',
     PREREQ_PM    => {
         'Getopt::Long' => 2.54,
         'Clone' => 0.46,

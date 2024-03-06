@@ -1,3 +1,5 @@
 record.yaml
 rss/
 rss/*
+MYMETA*
+Makefile

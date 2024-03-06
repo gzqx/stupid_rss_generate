@@ -1,3 +1,6 @@
+#package STUPID::RSS_GENERATOR 0.01;
+$VERSION=0.01;
+
 use warnings;
 use strict;
 use utf8;

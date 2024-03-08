@@ -15,6 +15,7 @@ use YAML::Tiny;
 use Clone qw(clone);
 use Lingua::ZH::Numbers;
 use XML::RSS;
+use Log::Log4perl qw(:easy);
 
 use constant DEFAULT_RECORD_NAME		=> 'record.yaml';
 use constant RECORD_TIME_FORMAT			=> '%Y-%m-%d-%H-%M-%S';
@@ -22,25 +23,38 @@ use constant PRINT_HUMAN_TIME_FORMAT	=> '%Y-%m-%d %H:%M:%S';
 use constant GENESIS					=> Time::Piece->strptime('1970-01-01-00-00-00', RECORD_TIME_FORMAT);
 use constant RSS_FOLDER					=> './rss_folder';
 
+
 my $cliRecordFile;
 my $verbose=1;
 my $automation;
 my $help;
 my $rssFolderPath='./rss/';
+my $fetchGap=20;
+my $LOG_FILE_PATH='.stupid_rss_generator.log';
 
 
 GetOptions{
 	'R|record=s'	=> \$cliRecordFile,
 	'f|feed-path=s'	=> \$rssFolderPath,
+	'g|fetch-gap=i'	=> \$fetchGap,
 	'v|verbose'		=> \$verbose,
 	'h|help'		=> \$help,
+	'lf|logfile=s'	=> \$LOG_FILE_PATH,
 	'a|auto'		=> \$automation,
 } or die "Unknown option!\n";
+
+# First things first, initial logger
+Log::Log4perl->easy_init({
+		level	=> $DEBUG,
+		file	=> $LOG_FILE_PATH,
+	});
 
 unless (-d $rssFolderPath){
 	mkdir $rssFolderPath or die "Failed to create $rssFolderPath.";
 	say "$rssFolderPath not exist. Created One.";
 }
+
+
 
 #book yaml template
 my $bookTemplate={
@@ -48,6 +62,7 @@ my $bookTemplate={
 	Author							=> '',
 	ContentPageUrl 					=> '',
 	LastChapterFetched				=> '0',
+	CreationTime					=> GENESIS->strftime(RECORD_TIME_FORMAT),
 	LastFetchTime					=> GENESIS->strftime(RECORD_TIME_FORMAT),
 	LastCheckTime					=> GENESIS->strftime(RECORD_TIME_FORMAT),
 	HashOfTitle						=> '',
@@ -67,12 +82,6 @@ if ($cliRecordFile){
 	$recordFile=$cliRecordFile;
 }
 
-sub vsay{
-	my $string=pop @_;
-	if ($verbose) {
-		say $string;
-	}
-}
 
 
 #create user agent
@@ -119,8 +128,8 @@ unless (-e $recordFile){
 		#TODO:support limit rss entries per file
 		my $updatedTargetBook;
 		($targetBook, $rss)=&updateBooks($targetBook,$rss);
-		&vsay($rssFolderPath.$rssName);
-		&vsay($rss->as_string);
+		INFO("Update RSS file at ".$rssFolderPath.$rssName);
+		TRACE("Content of RSS string is:\n".$rss->as_string);
 		$rss->save($rssFolderPath.$rssName) or die ("Failed to save to $rssFolderPath$rssName");
 	}
 	$yaml->write($recordFile);
@@ -130,6 +139,9 @@ unless (-e $recordFile){
 sub addNewBook{
 	#TODO: add new book to existing yaml
 	my $newBook=pop @_;
+
+	$newBook->{CreationTime}=localtime->strftime(RECORD_TIME_FORMAT);
+	
 	my $contentUrlInput= prompt -v, "Input the link to the content page:\n";
 	#format uri
 	my $contentUrl=URI->new($contentUrlInput);
@@ -162,19 +174,21 @@ sub updateBooks{
 		# if it is a new book
 		if ($targetBook->{Title} eq "" && $contentPageContent =~/$targetBook->{RegrexForTitle}/){
 			$targetBook->{Title} = $1; 
-			&vsay("Title of book is $targetBook->{Title}");
+			INFO("Title of book is $targetBook->{Title}");
 			$rssBook->channel(
-				title	=> "$targetBook->{Title}",
-				link	=> "$targetBook->{ContentPageUrl}",
+				title			=> "$targetBook->{Title}",
+				link			=> "$targetBook->{ContentPageUrl}",
+				pubDate			=> localtime->strftime(RECORD_TIME_FORMAT),
+				lastBuildDate	=> localtime->strftime(RECORD_TIME_FORMAT),
 			);
 		}
 		while($contentPageContent =~/$targetBook->{RegrexForChapterLinkAndNumber}/g){
 			#TODO: Handle Chinese number with Lingua::ZH::Numbers
 			#TODO: Handle situation when link and number is not in same line or link somehow managed to come after chapter number
 			my $chapterLink=$1;
-			&vsay("Chapter link is $chapterLink");
+			INFO("Chapter link is $chapterLink");
 			my $chapterCounter = $2;
-			&vsay("Chapter checked is No.$chapterCounter");
+			INFO("Chapter checked is No.$chapterCounter");
 
 			#fetch new chapter if there is any
 			if ($chapterCounter > $targetBook->{LastChapterFetched}){
@@ -185,9 +199,10 @@ sub updateBooks{
 					my $chapterTitle='';
 					if ($textPageContent =~/$targetBook->{RegrexForChapterTitle}/){
 						$chapterTitle=$1;
-						&vsay("Chapter Title is $chapterTitle");
+						INFO("Chapter Title is $chapterTitle");
 					}else{
-						say "Failed to get chapter title. Check your regrex."
+						say "Failed to get chapter title. Check your regrex.";
+						ERROR("Failed to get chapter title with regrex:\n".$targetBook->{RegrexForChapterTitle});
 					}
 					#get chapter text
 					my $text='';
@@ -199,12 +214,13 @@ sub updateBooks{
 						title		=> "$chapterTitle",
 						link		=> "$chapterLink",
 						description	=> "$text",
+						pubDate		=> localtime->strftime(RECORD_TIME_FORMAT),
 					);
 				}
 			}
 			$targetBook->{LastChapterFetched}++;
 			#last; # for testing
-			sleep(20); #Prevent been blocked for too much request
+			sleep($fetchGap); #Prevent been blocked for too much request
 		}
 	}else{
 		say ("Timeout when requesting content page, check your url or internet connection.");

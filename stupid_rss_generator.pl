@@ -217,10 +217,9 @@ sub updateBooks{
 						pubDate		=> localtime->strftime(RECORD_TIME_FORMAT),
 					);
 				}
+				$targetBook->{LastChapterFetched}++;
+				sleep($fetchGap); #Prevent been blocked for too much request
 			}
-			$targetBook->{LastChapterFetched}++;
-			#last; # for testing
-			sleep($fetchGap); #Prevent been blocked for too much request
 		}
 	}else{
 		say ("Timeout when requesting content page, check your url or internet connection.");

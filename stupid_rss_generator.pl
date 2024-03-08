@@ -115,7 +115,7 @@ unless (-e $recordFile){
 #update books if record file found
 	my $yaml=YAML::Tiny->read("$recordFile");
 	foreach my $targetBook (@{$yaml}){
-		my $rss=XML::RSS->new(version => 2.0);
+		my $rss=XML::RSS->new(version => '2.0');
 		my $rssName=$targetBook->{Title}.".xml";
 		if (-e $rssFolderPath.$rssName){
 			$rss->parsefile($rssFolderPath.$rssName);

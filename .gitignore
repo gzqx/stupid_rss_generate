@@ -37,3 +37,5 @@ inc/
 /pm_to_blib
 /*.zip
 
+# log
+*.log

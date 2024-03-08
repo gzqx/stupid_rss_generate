@@ -207,7 +207,7 @@ sub updateBooks{
 					#get chapter text
 					my $text='';
 					while ($textPageContent=~/$targetBook->{RegrexForText}/g){
-						$text.=$1;
+						$text.=$1."\n";
 						#&vsay("Get a new line of text as: \n $text");
 					}
 					$rssBook->add_item(

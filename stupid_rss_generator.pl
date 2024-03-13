@@ -16,12 +16,14 @@ use Clone qw(clone);
 use Lingua::ZH::Numbers;
 use XML::RSS;
 use Log::Log4perl qw(:easy);
+use Encode;
 
 use constant DEFAULT_RECORD_NAME		=> 'record.yaml';
 use constant RECORD_TIME_FORMAT			=> '%Y-%m-%d-%H-%M-%S';
 use constant PRINT_HUMAN_TIME_FORMAT	=> '%Y-%m-%d %H:%M:%S';
 use constant GENESIS					=> Time::Piece->strptime('1970-01-01-00-00-00', RECORD_TIME_FORMAT);
 use constant RSS_FOLDER					=> './rss_folder';
+use constant NEW_LINE_UTF8				=> encode("UTF-8", '\n');
 
 
 my $cliRecordFile;
@@ -45,7 +47,7 @@ GetOptions{
 
 # First things first, initial logger
 Log::Log4perl->easy_init({
-		level	=> $DEBUG,
+		level	=> $INFO,
 		file	=> $LOG_FILE_PATH,
 	});
 
@@ -106,7 +108,7 @@ unless (-e $recordFile){
 		($newBook,$rss)=&addNewBook($newBook);
 		push @$yaml, $newBook;
 		$yaml->write($recordFile) or die ("Failed to save to $recordFile");
-		$rss->save($rssFolderPath.$rss->channel('title').'.xml') or die ("Failed to save to $rssFolderPath$rss->channel('title').xml");
+		$rss->save($rssFolderPath.$rss->channel('title').'.rss') or die ("Failed to save to $rssFolderPath$rss->channel('title').rss");
 	} else {
 		say "No '$recordFile' found or created, exiting.";
 		exit;
@@ -116,7 +118,7 @@ unless (-e $recordFile){
 	my $yaml=YAML::Tiny->read("$recordFile");
 	foreach my $targetBook (@{$yaml}){
 		my $rss=XML::RSS->new(version => 2.0);
-		my $rssName=$targetBook->{Title}.".xml";
+		my $rssName=$targetBook->{Title}.".rss";
 		if (-e $rssFolderPath.$rssName){
 			$rss->parsefile($rssFolderPath.$rssName);
 		} else{
@@ -205,11 +207,12 @@ sub updateBooks{
 						ERROR("Failed to get chapter title with regrex:\n".$targetBook->{RegrexForChapterTitle});
 					}
 					#get chapter text
-					my $text='';
+					my $text='<![CDATA[';
 					while ($textPageContent=~/$targetBook->{RegrexForText}/g){
-						$text.=$1."\n";
+						$text.="<p>".$1."</p>";
 						#&vsay("Get a new line of text as: \n $text");
 					}
+					$text.="]]>";
 					$rssBook->add_item(
 						title		=> "$chapterTitle",
 						link		=> "$chapterLink",

@@ -16,12 +16,20 @@ use Clone qw(clone);
 use Lingua::ZH::Numbers;
 use XML::RSS;
 use Log::Log4perl qw(:easy);
+use Encode;
+use File::BaseDir qw(xdg_data_home xdg_config_home xdg_cache_home);
+use File::Spec qw(catdir); #handle path concatenation platform-independently
+
 
 use constant DEFAULT_RECORD_NAME		=> 'record.yaml';
 use constant RECORD_TIME_FORMAT			=> '%Y-%m-%d-%H-%M-%S';
 use constant PRINT_HUMAN_TIME_FORMAT	=> '%Y-%m-%d %H:%M:%S';
 use constant GENESIS					=> Time::Piece->strptime('1970-01-01-00-00-00', RECORD_TIME_FORMAT);
 use constant RSS_FOLDER					=> './rss_folder';
+use constant NEW_LINE_UTF8				=> encode("UTF-8", '\n');
+use constant XDG_DATA_DIR				=> xdg_data_home();
+use constant XDG_CONFIG_DIR				=> xdg_config_home();
+use constant XDG_CACHE_DIR				=> xdg_cache_home();
 
 
 my $cliRecordFile;
@@ -31,6 +39,7 @@ my $help;
 my $rssFolderPath='./rss/';
 my $fetchGap=20;
 my $LOG_FILE_PATH='.stupid_rss_generator.log';
+my $useXDG=0;
 
 
 GetOptions{
@@ -41,11 +50,12 @@ GetOptions{
 	'h|help'		=> \$help,
 	'lf|logfile=s'	=> \$LOG_FILE_PATH,
 	'a|auto'		=> \$automation,
+	'xdg'			=> \$useXDG,
 } or die "Unknown option!\n";
 
 # First things first, initial logger
 Log::Log4perl->easy_init({
-		level	=> $DEBUG,
+		level	=> $INFO,
 		file	=> $LOG_FILE_PATH,
 	});
 
@@ -105,8 +115,9 @@ unless (-e $recordFile){
 		my $newBook=clone($bookTemplate);
 		($newBook,$rss)=&addNewBook($newBook);
 		push @$yaml, $newBook;
+		my $rssFileName=$rss->channel('title').'.rss';
 		$yaml->write($recordFile) or die ("Failed to save to $recordFile");
-		$rss->save($rssFolderPath.$rss->channel('title').'.xml') or die ("Failed to save to $rssFolderPath$rss->channel('title').xml");
+		$rss->save(catdir($rssFolderPath, $rssFileName) ) or die ("Failed to save to $rssFolderPath$rssFileName");
 	} else {
 		say "No '$recordFile' found or created, exiting.";
 		exit;
@@ -115,10 +126,17 @@ unless (-e $recordFile){
 #update books if record file found
 	my $yaml=YAML::Tiny->read("$recordFile");
 	foreach my $targetBook (@{$yaml}){
+<<<<<<< HEAD
 		my $rss=XML::RSS->new(version => '2.0');
 		my $rssName=$targetBook->{Title}.".xml";
 		if (-e $rssFolderPath.$rssName){
 			$rss->parsefile($rssFolderPath.$rssName);
+=======
+		my $rss=XML::RSS->new(version => 2.0);
+		my $rssFileName=$targetBook->{Title}.".rss";
+		if (-e $rssFolderPath.$rssFileName){
+			$rss->parsefile($rssFolderPath.$rssFileName);
+>>>>>>> 66d95851023f729d2766e87d02a7c51c662b2c55
 		} else{
 			$rss->channel(
 				title	=> "$targetBook->{Title}",
@@ -128,9 +146,9 @@ unless (-e $recordFile){
 		#TODO:support limit rss entries per file
 		my $updatedTargetBook;
 		($targetBook, $rss)=&updateBooks($targetBook,$rss);
-		INFO("Update RSS file at ".$rssFolderPath.$rssName);
+		INFO("Update RSS file at ".$rssFolderPath.$rssFileName);
 		TRACE("Content of RSS string is:\n".$rss->as_string);
-		$rss->save($rssFolderPath.$rssName) or die ("Failed to save to $rssFolderPath$rssName");
+		$rss->save($rssFolderPath.$rssFileName) or die ("Failed to save to $rssFolderPath$rssFileName");
 	}
 	$yaml->write($recordFile);
 }
@@ -205,11 +223,12 @@ sub updateBooks{
 						ERROR("Failed to get chapter title with regrex:\n".$targetBook->{RegrexForChapterTitle});
 					}
 					#get chapter text
-					my $text='';
+					my $text='<![CDATA[';
 					while ($textPageContent=~/$targetBook->{RegrexForText}/g){
-						$text.=$1."\n";
+						$text.="<p>".$1."</p>";
 						#&vsay("Get a new line of text as: \n $text");
 					}
+					$text.="]]>";
 					$rssBook->add_item(
 						title		=> "$chapterTitle",
 						link		=> "$chapterLink",

@@ -1,5 +1,4 @@
-#package STUPID::RSS_GENERATOR 0.01;
-$VERSION=0.01;
+package SerialSubRssGenerator 0.01;
 
 use warnings;
 use strict;
@@ -65,7 +64,6 @@ unless (-d $rssFolderPath){
 }
 
 
-
 #book yaml template
 my $bookTemplate={
 	Title							=> '',
@@ -123,40 +121,38 @@ unless (-e $recordFile){
 		exit;
 	}
 } else {
-#update books if record file found
+	#update books if record file found
 	my $yaml=YAML::Tiny->read("$recordFile");
 	foreach my $targetBook (@{$yaml}){
-<<<<<<< HEAD
 		my $rss=XML::RSS->new(version => '2.0');
 		my $rssName=$targetBook->{Title}.".xml";
 		if (-e $rssFolderPath.$rssName){
 			$rss->parsefile($rssFolderPath.$rssName);
-=======
-		my $rss=XML::RSS->new(version => 2.0);
-		my $rssFileName=$targetBook->{Title}.".rss";
-		if (-e $rssFolderPath.$rssFileName){
-			$rss->parsefile($rssFolderPath.$rssFileName);
->>>>>>> 66d95851023f729d2766e87d02a7c51c662b2c55
-		} else{
-			$rss->channel(
-				title	=> "$targetBook->{Title}",
-				link	=> "$targetBook->{ContentPageUrl}",
-			);
+			my $rss=XML::RSS->new(version => 2.0);
+			my $rssFileName=$targetBook->{Title}.".rss";
+			if (-e $rssFolderPath.$rssFileName){
+				$rss->parsefile($rssFolderPath.$rssFileName);
+			} else{
+				$rss->channel(
+					title	=> "$targetBook->{Title}",
+					link	=> "$targetBook->{ContentPageUrl}",
+				);
+			}
+			#TODO:support limit rss entries per file
+			my $updatedTargetBook;
+			($targetBook, $rss)=&updateBooks($targetBook,$rss);
+			INFO("Update RSS file at ".$rssFolderPath.$rssFileName);
+			TRACE("Content of RSS string is:\n".$rss->as_string);
+			$rss->save($rssFolderPath.$rssFileName) or die ("Failed to save to $rssFolderPath$rssFileName");
 		}
-		#TODO:support limit rss entries per file
-		my $updatedTargetBook;
-		($targetBook, $rss)=&updateBooks($targetBook,$rss);
-		INFO("Update RSS file at ".$rssFolderPath.$rssFileName);
-		TRACE("Content of RSS string is:\n".$rss->as_string);
-		$rss->save($rssFolderPath.$rssFileName) or die ("Failed to save to $rssFolderPath$rssFileName");
+		$yaml->write($recordFile);
 	}
-	$yaml->write($recordFile);
 }
 
 
 sub addNewBook{
 	#TODO: add new book to existing yaml
-	my $newBook=pop @_;
+	my ($newBook)=@_;
 
 	$newBook->{CreationTime}=localtime->strftime(RECORD_TIME_FORMAT);
 	
@@ -181,6 +177,7 @@ sub addNewBook{
 	($newBook,$rssNewBook)=&updateBooks($newBook,$rssNewBook);
 	return ($newBook, $rssNewBook);
 }
+
 
 sub updateBooks{
 	my ($targetBook,$rssBook)=@_;
@@ -245,4 +242,3 @@ sub updateBooks{
 	}
 	return ($targetBook,$rssBook);
 }
-

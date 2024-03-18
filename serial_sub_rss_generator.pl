@@ -1,5 +1,3 @@
-package SERIAL_SUB_RSS_GENERATOR 0.01;
-
 use warnings;
 use strict;
 use utf8;
@@ -18,6 +16,9 @@ use Log::Log4perl qw(:easy);
 use Encode;
 use File::BaseDir qw(xdg_data_home xdg_config_home xdg_cache_home);
 use File::Spec qw(catdir); #handle path concatenation platform-independently
+
+use lib 'lib';
+use SerialSubRssGenerator;
 
 
 use constant DEFAULT_RECORD_NAME		=> 'record.yaml';

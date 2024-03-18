@@ -1,4 +1,5 @@
-package SerialSubRssGenerator 0.01;
+package SerialSubRssGenerator;
+our $VERSION=0.01;
 
 use warnings;
 use strict;
@@ -18,17 +19,22 @@ use Log::Log4perl qw(:easy);
 use Encode;
 use File::BaseDir qw(xdg_data_home xdg_config_home xdg_cache_home);
 use File::Spec qw(catdir); #handle path concatenation platform-independently
+use SerialSubRssGenerator::Constants;
+
+use Exporter 'import';
+
+our @EXPORT_OK = qw(addNewBook updateBooks);
 
 
-use constant DEFAULT_RECORD_NAME		=> 'record.yaml';
-use constant RECORD_TIME_FORMAT			=> '%Y-%m-%d-%H-%M-%S';
-use constant PRINT_HUMAN_TIME_FORMAT	=> '%Y-%m-%d %H:%M:%S';
-use constant GENESIS					=> Time::Piece->strptime('1970-01-01-00-00-00', RECORD_TIME_FORMAT);
-use constant RSS_FOLDER					=> './rss_folder';
-use constant NEW_LINE_UTF8				=> encode("UTF-8", '\n');
-use constant XDG_DATA_DIR				=> xdg_data_home();
-use constant XDG_CONFIG_DIR				=> xdg_config_home();
-use constant XDG_CACHE_DIR				=> xdg_cache_home();
+#use constant DEFAULT_RECORD_NAME		=> 'record.yaml';
+#use constant RECORD_TIME_FORMAT			=> '%Y-%m-%d-%H-%M-%S';
+#use constant PRINT_HUMAN_TIME_FORMAT	=> '%Y-%m-%d %H:%M:%S';
+#use constant GENESIS					=> Time::Piece->strptime('1970-01-01-00-00-00', RECORD_TIME_FORMAT);
+#use constant RSS_FOLDER					=> './rss_folder';
+#use constant NEW_LINE_UTF8				=> encode("UTF-8", '\n');
+#use constant XDG_DATA_DIR				=> xdg_data_home();
+#use constant XDG_CONFIG_DIR				=> xdg_config_home();
+#use constant XDG_CACHE_DIR				=> xdg_cache_home();
 
 
 my $cliRecordFile;
@@ -242,3 +248,5 @@ sub updateBooks{
 	}
 	return ($targetBook,$rssBook);
 }
+
+1;

@@ -1,8 +1,10 @@
 package SerialSubRssGenerator::Constants;
+use strict;
+use warnings;
 our $VERSION = '0.01';
 
 use utf8;
-use 5.027;
+use 5.036;
 use Getopt::Long;
 use HTML::TreeBuilder;
 use IO::Prompter;
@@ -24,15 +26,19 @@ use Const::Exporter;
 my $recordTimeFormat = '%Y-%m-%d-%H-%M-%S';
 
 my %constants = (
+    'DEFAULT_FETCH_GAP'         => 20,
     'DEFAULT_RECORD_NAME'		=> 'record.yaml',
-    'RECORD_TIME_FORMAT'		=> $recordTimeFormat,
-    'PRINT_HUMAN_TIME_FORMAT'	=> '%Y-%m-%d %H:%M:%S',
+    'DEFAULT_RSS_FOLDER'		=> './rss',
+    'DEFAULT_USER_AGENT'        => 'Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/119.0',
     'GENESIS'					=> Time::Piece->strptime('1970-01-01-00-00-00', $recordTimeFormat),
-    'DEFAULT_RSS_FOLDER'		=> './rss_folder',
     'NEW_LINE_UTF8'				=> encode("UTF-8", '\n'),
-    'XDG_DATA_DIR'				=> xdg_data_home(),
-    'XDG_CONFIG_DIR'			=> xdg_config_home(),
+    'PRINT_HUMAN_TIME_FORMAT'	=> '%Y-%m-%d %H:%M:%S',
+    'RECORD_TIME_FORMAT'		=> $recordTimeFormat,
     'XDG_CACHE_DIR'				=> xdg_cache_home(),
+    'XDG_CONFIG_DIR'			=> xdg_config_home(),
+    'XDG_DATA_DIR'				=> xdg_data_home(),
+    'DEFAULT_CONFIG_FILE_NAME'  => '.config.yaml',
+    'DEFAULT_LOG_FILE_NAME'     => '.stupid_rss_generator.log',
  );
 
  Const::Exporter->import(

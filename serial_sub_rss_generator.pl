@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 use utf8;
-use 5.027;
+use 5.036;
 use Getopt::Long;
 use HTML::TreeBuilder;
 use IO::Prompter;
@@ -10,7 +10,6 @@ use Time::Piece;
 use URI;
 use YAML::Tiny;
 use Clone qw(clone);
-use Lingua::ZH::Numbers;
 use XML::RSS;
 use Log::Log4perl qw(:easy);
 use Encode;
